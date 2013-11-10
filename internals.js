@@ -22,9 +22,6 @@ var ffi = require('ffi')
     , { tcgetattr: [ref.types.int, [fd_t, TermiosPtr]]
       , tcsetattr: [ref.types.int, [fd_t, ref.types.int, TermiosPtr]]
       , cfsetspeed: [ref.types.int, [TermiosPtr, speed_t]]
-      , cfsetispeed: [ref.types.int, [TermiosPtr, speed_t]]
-      , cfsetospeed: [ref.types.int, [TermiosPtr, speed_t]]
-      , cfgetispeed: [speed_t, [TermiosPtr]]
       })
 
 for (var key in term) exports[key] = term[key]
