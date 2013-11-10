@@ -15,6 +15,7 @@ inherits(Serial, DuplexStream)
 function Serial(port, baud) { var self = this
   DuplexStream.call(this)
 
+  port = port || '/dev/ttyS0'
   baud = (baud | 0) || 115200
   if (!speeds.has(baud.toString())) throw new Error('invalid baud rate ' + baud)
 
