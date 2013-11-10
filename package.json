@@ -1,0 +1,34 @@
+{
+  "name": "serialport-stream",
+  "version": "0.0.0",
+  "description": "serial ports as streams",
+  "main": "index.js",
+  "scripts": {
+    "test": "tests-of-the-sierra-madre"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nathan7/serialport-stream.git"
+  },
+  "keywords": [
+    "serial",
+    "port",
+    "serialport"
+  ],
+  "author": "Nathan Zadoks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nathan7/serialport-stream/issues"
+  },
+  "homepage": "https://github.com/nathan7/serialport-stream",
+  "dependencies": {
+    "tests-of-the-sierra-madre": "0.0.0",
+    "dict": "~1.4.0",
+    "ref-struct": "0.0.5",
+    "ref": "~0.1.3",
+    "ffi": "~1.2.6"
+  },
+  "bin": {
+    "term": "./term.js"
+  }
+}
