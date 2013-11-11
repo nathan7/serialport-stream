@@ -11,6 +11,10 @@
 
   Returns a new serial [duplex stream](http://nodejs.org/api/stream.html#stream_class_stream_duplex).
 
+#### serial.close()
+
+  Close the port.
+
 ## Compatibility
 
   This is currently implemented with node-ffi.
