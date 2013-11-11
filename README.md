@@ -15,6 +15,11 @@
 
   Close the port.
 
+#### event 'open'
+
+  Emitted when the port is opened.
+  Unlike with node-serialport, you don't need to wait for this event to start reading or writing. Streams all the way.
+
 ## Compatibility
 
   This is currently implemented with node-ffi.
