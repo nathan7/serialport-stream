@@ -3,12 +3,7 @@ var inherits = require('util').inherits
   , Stream = require('stream')
   , DuplexStream = Stream.Duplex
   , fs = require('fs')
-  , internals = require('./internals')
-  , Termios = internals.Termios
-  , tcgetattr = internals.tcgetattr
-  , tcsetattr = internals.tcsetattr
-  , cfsetspeed = internals.cfsetspeed
-  , speeds = internals.speeds
+  , binding = require('bindings')('binding.node')
 
 module.exports = exports = Serial
 inherits(Serial, DuplexStream)
@@ -17,20 +12,14 @@ function Serial(port, baud) { var self = this
 
   port = port || '/dev/ttyS0'
   baud = (baud | 0) || 115200
-  if (!speeds.has(baud.toString())) throw new Error('invalid baud rate ' + baud)
+  if (!binding.validBaud(baud)) throw new Error('invalid baud rate ' + baud)
 
   this._fd = null
   fs.open(port, 'r+', function(err, fd) {
     if (err) return self.emit('error', err)
     self._fd = fd
 
-    var termios = new Termios()
-    if (tcgetattr(fd, termios.ref()) !== 0)
-      return self.emit('error', new Error('failed to get port attributes'))
-    if (cfsetspeed(termios.ref(), speeds.get(baud.toString())) !== 0)
-      return self.emit('error', new Error('failed to set port speed'))
-    if (tcsetattr(fd, 0, termios.ref()) !== 0)
-      return self.emit('error', new Error('failed to set port attributes'))
+    binding.initPort(fd, baud)
 
     self._readStream = fs.createReadStream(port, { fd: fd })
     self._readStream.on('error', function(err) { self.emit('error', err) })

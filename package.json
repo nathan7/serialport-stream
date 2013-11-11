@@ -23,10 +23,7 @@
   "homepage": "https://github.com/nathan7/serialport-stream",
   "dependencies": {
     "tests-of-the-sierra-madre": "0.0.0",
-    "dict": "~1.4.0",
-    "ref-struct": "0.0.5",
-    "ref": "~0.1.3",
-    "ffi": "~1.2.6"
+    "bindings": "~1.1.1"
   },
   "bin": {
     "term": "./term.js"

@@ -22,7 +22,6 @@
 
 ## Compatibility
 
-  This is currently implemented with node-ffi.
-  Compatible with anything that happens to have compatible tcgetattr/tcsetattr/csetspeed *and* the same termios struct.
-  Help with doing this with a sane native module is welcome.
+  This is currently implemented with a POSIX-only native binding.
+  If you'd want to implement Windows compat, that'd rock.
 
