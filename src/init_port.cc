@@ -36,7 +36,7 @@ Handle<Value> InitPort(const Arguments& args) {
   }
 
   struct termios termios;
-  
+
   if (fail(tcgetattr(fd, &termios)))
     return scope.Close(Undefined());
 
