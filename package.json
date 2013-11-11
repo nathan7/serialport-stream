@@ -1,6 +1,6 @@
 {
   "name": "serialport-stream",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "serial ports as streams",
   "main": "index.js",
   "scripts": {
