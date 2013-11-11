@@ -43,6 +43,9 @@ Handle<Value> InitPort(const Arguments& args) {
   if (fail(cfsetspeed(&termios, speed)))
     return scope.Close(Undefined());
 
+  if (fail(cfmakeraw(&termios)))
+    return scope.Close(Undefined());
+
   if (fail(tcsetattr(fd, TCSADRAIN, &termios)))
     return scope.Close(Undefined());
 
