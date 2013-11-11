@@ -6,6 +6,13 @@
 
 using namespace v8;
 
+bool fail(int ret) {
+  if (ret == 0)
+    return false;
+  ThrowException(Exception::Error(String::New(strerror(ret))));
+  return true;
+}
+
 Handle<Value> InitPort(const Arguments& args) {
   HandleScope scope;
 
@@ -29,29 +36,18 @@ Handle<Value> InitPort(const Arguments& args) {
   }
 
   struct termios termios;
-  int ret;
   
-  ret = tcgetattr(fd, &termios);
-  if (ret != 0) {
-    ThrowException(Exception::Error(String::New(strerror(ret))));
+  if (fail(tcgetattr(fd, &termios)))
     return scope.Close(Undefined());
-  }
 
-  ret = cfsetspeed(&termios, speed);
-  if (ret != 0) {
-    ThrowException(Exception::Error(String::New(strerror(ret))));
+  if (fail(cfsetspeed(&termios, speed)))
     return scope.Close(Undefined());
-  }
 
-  ret = tcsetattr(fd, TCSADRAIN, &termios);
-  if (ret != 0) {
-    ThrowException(Exception::Error(String::New(strerror(ret))));
+  if (fail(tcsetattr(fd, TCSADRAIN, &termios)))
     return scope.Close(Undefined());
-  }
 
   return scope.Close(Undefined());
 }
-
 
 Handle<Value> ValidBaud(const Arguments& args) {
   HandleScope scope;
