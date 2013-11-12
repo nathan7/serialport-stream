@@ -54,6 +54,7 @@ Serial.prototype._write = function(chunk, encoding, cb) {
 Serial.prototype.close = function(cb) { var self = this
   var fd = this._fd
   this._fd = this._writeStream = this._readStream = null
+  this.writable = false
   fs.close(fd, function(err) {
     if (err) self.emit('error', err)
   })
