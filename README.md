@@ -23,5 +23,5 @@
 ## Compatibility
 
   This is currently implemented with a POSIX-only native binding.
-  If you'd want to implement Windows compat, that'd rock.
+  If you'd want to implement [Windows compat](https://github.com/nathan7/serialport-stream/issues/1), that'd rock.
 
