@@ -32,7 +32,7 @@ function Serial(port, baud) { var self = this
 
 function whenOpen(self, cb) {
   if (self._fd === null)
-    self.on('open', cb)
+    self.once('open', cb)
   else
     cb.call(self)
 }
