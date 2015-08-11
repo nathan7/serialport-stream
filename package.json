@@ -4,7 +4,7 @@
   "description": "serial ports as streams",
   "main": "index.js",
   "scripts": {
-    "test": "tests-of-the-sierra-madre"
+    "test": "standard && tests-of-the-sierra-madre"
   },
   "repository": {
     "type": "git",
@@ -27,5 +27,8 @@
   },
   "bin": {
     "term": "./term.js"
+  },
+  "devDependencies": {
+    "standard": "^5.0.2"
   }
 }
