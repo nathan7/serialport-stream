@@ -22,9 +22,9 @@ function Serial (port, baud) {
 
     binding.initPort(fd, baud)
 
-    self._readStream = fs.createReadStream(port, { fd: fd })
+    self._readStream = fs.createReadStream(port, { fd: fd, autoClose: false })
     self._readStream.on('error', function (err) { self.emit('error', err) })
-    self._writeStream = fs.createWriteStream(port, { fd: fd })
+    self._writeStream = fs.createWriteStream(port, { fd: fd, autoClose: false })
     self._writeStream.on('error', function (err) { self.emit('error', err) })
 
     self.emit('open')
