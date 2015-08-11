@@ -13,7 +13,7 @@ using v8::String;
 bool fail(int ret) {
   if (ret == 0)
     return false;
-  NanThrowError(strerror(ret));
+  NanThrowError(strerror(errno));
   return true;
 }
 
