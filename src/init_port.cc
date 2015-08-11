@@ -1,29 +1,33 @@
 #include <node.h>
+#include <nan.h>
 
 #include <string.h>
 #include <termios.h>
 #include "find_baud.h"
 
-using namespace v8;
+using v8::FunctionTemplate;
+using v8::Handle;
+using v8::Object;
+using v8::String;
 
 bool fail(int ret) {
   if (ret == 0)
     return false;
-  ThrowException(Exception::Error(String::New(strerror(ret))));
+  NanThrowError(strerror(ret));
   return true;
 }
 
-Handle<Value> InitPort(const Arguments& args) {
-  HandleScope scope;
+NAN_METHOD(InitPort) {
+  NanScope();
 
   if (args.Length() < 2) {
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    NanThrowTypeError("Wrong number of arguments");
+    NanReturnUndefined();
   }
 
   if (!args[0]->IsNumber() || !args[1]->IsNumber()) {
-    ThrowException(Exception::TypeError(String::New("Wrong argument types")));
-    return scope.Close(Undefined());
+    NanThrowTypeError("Wrong argument types");
+    NanReturnUndefined();
   }
 
   int fd = args[0]->NumberValue();
@@ -31,49 +35,49 @@ Handle<Value> InitPort(const Arguments& args) {
 
   speed_t speed = find_baud(baud);
   if (speed == 0) {
-    ThrowException(Exception::Error(String::New("Unknown baud rate")));
-    return scope.Close(Undefined());
+    NanThrowError("Unknown baud rate");
+    NanReturnUndefined();
   }
 
   struct termios termios;
 
   if (fail(tcgetattr(fd, &termios)))
-    return scope.Close(Undefined());
+    NanReturnUndefined();
 
   if (fail(cfsetspeed(&termios, speed)))
-    return scope.Close(Undefined());
+    NanReturnUndefined();
 
   cfmakeraw(&termios);
 
   if (fail(tcsetattr(fd, TCSADRAIN, &termios)))
-    return scope.Close(Undefined());
+    NanReturnUndefined();
 
-  return scope.Close(Undefined());
+  NanReturnUndefined();
 }
 
-Handle<Value> ValidBaud(const Arguments& args) {
-  HandleScope scope;
+NAN_METHOD(ValidBaud) {
+  NanScope();
 
   if (args.Length() < 1) {
-    ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
-    return scope.Close(Undefined());
+    NanThrowTypeError("Wrong number of arguments");
+    NanReturnUndefined();
   }
 
   if (!args[0]->IsNumber()) {
-    ThrowException(Exception::TypeError(String::New("Wrong argument types")));
-    return scope.Close(Undefined());
+    NanThrowTypeError("Wrong argument types");
+    NanReturnUndefined();
   }
 
   unsigned int baud = args[0]->NumberValue();
 
-  return scope.Close(Boolean::New(find_baud(baud) != 0));
+  NanReturnValue(find_baud(baud) != 0);
 }
 
 void Init(Handle<Object> exports) {
-  exports->Set(String::NewSymbol("initPort"),
-      FunctionTemplate::New(InitPort)->GetFunction());
-  exports->Set(String::NewSymbol("validBaud"),
-      FunctionTemplate::New(ValidBaud)->GetFunction());
+  exports->Set(NanNew<String>("initPort"),
+    NanNew<FunctionTemplate>(InitPort)->GetFunction());
+  exports->Set(NanNew<String>("validBaud"),
+    NanNew<FunctionTemplate>(ValidBaud)->GetFunction());
 }
 
 NODE_MODULE(binding, Init)
