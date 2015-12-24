@@ -13,71 +13,65 @@ using v8::String;
 bool fail(int ret) {
   if (ret == 0)
     return false;
-  NanThrowError(strerror(errno));
+  Nan::ThrowError(strerror(errno));
   return true;
 }
 
 NAN_METHOD(InitPort) {
-  NanScope();
-
-  if (args.Length() < 2) {
-    NanThrowTypeError("Wrong number of arguments");
-    NanReturnUndefined();
+  if (info.Length() < 2) {
+    Nan::ThrowError("Wrong number of arguments");
+    return;
   }
 
-  if (!args[0]->IsNumber() || !args[1]->IsNumber()) {
-    NanThrowTypeError("Wrong argument types");
-    NanReturnUndefined();
+  if (!info[0]->IsNumber() || !info[1]->IsNumber()) {
+    Nan::ThrowError("Wrong argument types");
+    return;
   }
 
-  int fd = args[0]->NumberValue();
-  unsigned int baud = args[1]->NumberValue();
+  int fd = info[0]->NumberValue();
+  unsigned int baud = info[1]->NumberValue();
 
   speed_t speed = find_baud(baud);
   if (speed == 0) {
-    NanThrowError("Unknown baud rate");
-    NanReturnUndefined();
+    Nan::ThrowError("Unknown baud rate");
+    return;
   }
 
   struct termios termios;
 
   if (fail(tcgetattr(fd, &termios)))
-    NanReturnUndefined();
+    return;
 
   if (fail(cfsetspeed(&termios, speed)))
-    NanReturnUndefined();
+    return;
 
   cfmakeraw(&termios);
 
   if (fail(tcsetattr(fd, TCSADRAIN, &termios)))
-    NanReturnUndefined();
-
-  NanReturnUndefined();
+    return;
 }
 
 NAN_METHOD(ValidBaud) {
-  NanScope();
-
-  if (args.Length() < 1) {
-    NanThrowTypeError("Wrong number of arguments");
-    NanReturnUndefined();
+  if (info.Length() < 1) {
+    Nan::ThrowError("Wrong number of arguments");
+    return;
   }
 
-  if (!args[0]->IsNumber()) {
-    NanThrowTypeError("Wrong argument types");
-    NanReturnUndefined();
+  if (!info[0]->IsNumber()) {
+    Nan::ThrowError("Wrong argument types");
+    return;
   }
 
-  unsigned int baud = args[0]->NumberValue();
+  unsigned int baud = info[0]->NumberValue();
 
-  NanReturnValue(find_baud(baud) != 0);
+  info.GetReturnValue().Set(find_baud(baud) != 0);
 }
 
-void Init(Handle<Object> exports) {
-  exports->Set(NanNew<String>("initPort"),
-    NanNew<FunctionTemplate>(InitPort)->GetFunction());
-  exports->Set(NanNew<String>("validBaud"),
-    NanNew<FunctionTemplate>(ValidBaud)->GetFunction());
+NAN_MODULE_INIT(Init) {
+  Nan::Set(target, Nan::New("initPort").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(InitPort)).ToLocalChecked());
+  Nan::Set(target, Nan::New("validBaud").ToLocalChecked(),
+    Nan::GetFunction(Nan::New<FunctionTemplate>(ValidBaud)).ToLocalChecked());
 }
 
 NODE_MODULE(binding, Init)
